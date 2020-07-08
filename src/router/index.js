@@ -8,6 +8,7 @@ import Singer from "components/singer/singer";
 Vue.use(VueRouter);
 
 const routes = [
+  { path: "/", redirect: "/recommend" },
   { path: "/recommend", component: Recommend },
   { path: "/singer", component: Singer },
   { path: "/rank", component: Rank },
