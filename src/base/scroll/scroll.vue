@@ -4,10 +4,10 @@
   </div>
 </template>
 
-<script>
-const DIRECTION_H = "horizontal";
-const DIRECTION_V = "vertical";
-import BScroll from "better-scroll";
+<script type="text/ecmascript-6">
+import BScroll from 'better-scroll'
+const DIRECTION_H = 'horizontal'
+const DIRECTION_V = 'vertical'
 export default {
   props: {
     probeType: {
@@ -47,64 +47,64 @@ export default {
       default: 0
     }
   },
-  mounted() {
+  mounted () {
     setTimeout(() => {
-      this._initScroll();
-    }, 20);
+      this._initScroll()
+    }, 20)
   },
   methods: {
-    _initScroll() {
+    _initScroll () {
       if (!this.$refs.wrapper) {
-        return;
+        return
       }
       this.scroll = new BScroll(this.$refs.wrapper, {
         probeType: this.probeType,
         click: this.click,
-        eventPassthrough:
-          this.direction === DIRECTION_V ? DIRECTION_H : DIRECTION_V,
+        eventPassthrough: this.direction === DIRECTION_V ? DIRECTION_H : DIRECTION_V,
         directionLockThreshold: this.directionLockThreshold
-      });
+      })
       if (this.listenScroll) {
-        this.scroll.on("scroll", pos => {
-          this.$emit("scroll", pos);
-        });
+        this.scroll.on('scroll', (pos) => {
+          this.$emit('scroll', pos)
+        })
       }
       if (this.pullup) {
-        this.scroll.on("scrollEnd", () => {
-          if (this.scroll.y <= this.scroll.maxScrollY + 50) {
-            this.$emit("scrollToEnd");
+        this.scroll.on('scrollEnd', () => {
+          if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
+            this.$emit('scrollToEnd')
           }
-        });
+        })
       }
       if (this.beforeScroll) {
-        this.scroll.on("beforeScrollStart", () => {
-          this.$emit("beforeScroll");
-        });
+        this.scroll.on('beforeScrollStart', () => {
+          this.$emit('beforeScroll')
+        })
       }
     },
-    enable() {
-      this.scroll && this.scroll.enable();
+    disable () {
+      this.scroll && this.scroll.disable()
     },
-    disable() {
-      this.scroll && this.scroll.disable();
+    enable () {
+      this.scroll && this.scroll.enable()
     },
-    refresh() {
-      this.scroll && this.scroll.refresh();
+    refresh () {
+      this.scroll && this.scroll.refresh()
     },
-    scrollTo() {
-      this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments);
+    scrollTo () {
+      this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
     },
-    scrollToElement() {
-      this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments);
+    scrollToElement () {
+      this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
     }
   },
   watch: {
-    data() {
+    data () {
       setTimeout(() => {
-        this.refresh();
-      }, this.refreshDelay);
+        this.refresh()
+      }, this.refreshDelay)
     }
   }
-};
+}
 </script>
-<style lang="stylus" scoped></style>
+
+<style scoped lang="stylus"></style>
