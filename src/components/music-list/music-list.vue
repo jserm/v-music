@@ -5,7 +5,7 @@
     </div>
     <h1 class="title" v-html="title"></h1>
     <div class="bg-image" :style="bgStyle" ref="bgImage">
-      <div class="filter"></div>
+      <div class="filter" ref="filter"></div>
     </div>
     <div class="bg-layer" ref="layer"></div>
     <scroll
@@ -26,8 +26,11 @@
 <script>
 import Songlist from 'base/song-list/song-list'
 import Scroll from 'base/scroll/scroll'
+import { prefixStyle } from 'common/js/dom'
 
 const RESERVED_HEIGHT = 40
+const transform = prefixStyle('transform')
+const backdrop = prefixStyle('backdrop-filter')
 
 export default {
   props: {
@@ -74,8 +77,8 @@ export default {
       } else {
         blur = Math.min(20, percent * 20)
       }
-      this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
-      this.$refs.filter.style['backdrop'] = `blur(${blur}px)`
+      this.$refs.layer.style[transform] = `translate3d(0,${translateY}px,0)`
+      this.$refs.filter.style[backdrop] = `blur(${blur}px)`
       if (newVal < this.minTransalteY) {
         zIndex = 10
         this.$refs.bgImage.style.paddingTop = 0
@@ -86,7 +89,7 @@ export default {
         this.$refs.bgImage.style.height = 0
         this.$refs.playBtn.style.display = ''
       }
-      this.$refs.bgImage.style['transform'] = `scale(${scale})`
+      this.$refs.bgImage.style[transform] = `scale(${scale})`
       this.$refs.bgImage.style.zIndex = zIndex
     }
   },
