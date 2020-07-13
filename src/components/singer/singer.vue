@@ -1,6 +1,7 @@
 <template>
   <div class="singer" ref="singer">
-    <list-view :data="singers"></list-view>
+    <list-view :data="singers" @select="selectSinger"></list-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -11,6 +12,7 @@ import { getSingerList } from 'api/singer'
 import { ERR_OK } from 'api/config'
 import ListView from 'base/listview/listview'
 import Singer from 'common/js/singer'
+import { mapMutations } from 'vuex'
 export default {
   data() {
     return {
@@ -26,7 +28,7 @@ export default {
         if (res.code === ERR_OK) {
           const list = res.data.list
           this.singers = this._normalizeSinger(list)
-          console.log(this.singers)
+          // console.log(this.singers)
         }
       })
     },
@@ -56,7 +58,7 @@ export default {
             items: []
           }
         }
-        map[key].items.push(
+        map[key].items.push(   // map: {A: {title: 'A', items: {{id:xx, name:xx, avatar: xxxx},xxxxx}}}
           new Singer({
             id: item.Fsinger_mid,
             name: item.Fsinger_name
@@ -78,11 +80,24 @@ export default {
         return a.title.charCodeAt(0) - b.title.charCodeAt(0)
       })
       return hot.concat(ret)
-    }
+    },
+    selectSinger(singer) {
+      this.$router.push({path:`/singer/${singer.id}`})
+      this.setSinger(singer)
+    },
+    ...mapMutations({
+      setSinger: 'SET_SINGER'
+    })
   },
   components: {
     ListView
   }
 }
 </script>
-<style lang="stylus" scoped></style>
+<style lang="stylus" scoped>
+  .singer
+    position: fixed
+    top: 88px
+    bottom: 0
+    width: 100%
+</style>
