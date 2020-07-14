@@ -1,16 +1,22 @@
 <template>
   <div class="music-list">
-    <div class="back">
-      <i class="icon-back"></i>
+    <div class="back" @click="back">
+      <i class="icon-back" ></i>
     </div>
     <h1 class="title" v-html="title"></h1>
     <div class="bg-image" :style="bgStyle" ref="bgImage">
+      <div class="play-wrapper">
+        <div class="play" v-show="songs.length>0" ref="playBtn">
+          <i class="icon-play"></i>
+          <span class="text">随机播放全部</span>
+        </div>
+      </div>
       <div class="filter" ref="filter"></div>
     </div>
     <div class="bg-layer" ref="layer"></div>
     <scroll
       :data="songs"
-      :propType="propType"
+      :probeType="probeType"
       :listenScroll="listenScroll"
       @scroll="scroll"
       class="list"
@@ -18,6 +24,9 @@
     >
       <div class="song-list-wrapper">
         <songlist :songs="songs"></songlist>
+      </div>
+      <div class="loading-container" v-show="!songs.length">
+        <loading></loading>
       </div>
     </scroll>
   </div>
@@ -27,6 +36,7 @@
 import Songlist from 'base/song-list/song-list'
 import Scroll from 'base/scroll/scroll'
 import { prefixStyle } from 'common/js/dom'
+import Loading from 'base/loading/loading'
 
 const RESERVED_HEIGHT = 40
 const transform = prefixStyle('transform')
@@ -56,7 +66,10 @@ export default {
   },
   methods: {
     scroll(pos) {
-      this.scrollY = pos.Y
+      this.scrollY = pos.y
+    },
+    back() {
+      this.$router.back()
     }
   },
   computed: {
@@ -70,15 +83,18 @@ export default {
       let scale = 1
       let zIndex = 0
       let blur = 0
+      /* newVal大于0，表示下拉放大图片 */
       const percent = Math.abs(newVal / this.imageHeight)
       if (newVal > 0) {
         scale = 1 + percent
         zIndex = 10
       } else {
+        /* 上滑就给图片加一个blur蒙层 */
         blur = Math.min(20, percent * 20)
       }
       this.$refs.layer.style[transform] = `translate3d(0,${translateY}px,0)`
       this.$refs.filter.style[backdrop] = `blur(${blur}px)`
+      /* 如果向上滑动的距离超过了图片减RESERVER_HEIGHT的高度，就把随机播放按钮隐藏，图片高度改为40px */
       if (newVal < this.minTransalteY) {
         zIndex = 10
         this.$refs.bgImage.style.paddingTop = 0
@@ -94,7 +110,7 @@ export default {
     }
   },
   created() {
-    this.propType = 3,
+    this.probeType = 3,
     this.listenScroll = true
   },
   mounted() {
@@ -104,7 +120,8 @@ export default {
   },
   components: {
     Songlist,
-    Scroll
+    Scroll,
+    Loading
   }
 }
 </script>
